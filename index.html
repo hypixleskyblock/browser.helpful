@@ -359,6 +359,7 @@
   setupBox(document.getElementById("q2"), document.getElementById("box2"));
 
   const HUGHTUBE_URL = "https://ethan-build-web.github.io/ETsgame/";
+  const label = n => n === "HughTube" ? "HughTube (created by ethans)" : n;
   const siteList = [
     { name: "Hughipedia", domain: "hughipedia.org", color: "#555" },
     { name: "HughTube", domain: "hughtube.com", color: "#ea4335" },
@@ -536,7 +537,7 @@
 
     // overview
     const sources = Array.from({length: num(2,4)}, () => { const s = nextSite(); return `
-      <div class="src" data-site="${s.name}"><b>${rand(titleT)(t,T)}</b><span>${fav(s)}${s.name}</span></div>`; }).join("");
+      <div class="src" data-site="${s.name}"><b>${rand(titleT)(t,T)}</b><span>${fav(s)}${label(s.name)}</span></div>`; }).join("");
     const overview = rand(overviewT)(t, T) + `
       <div class="ov-more" id="ovMore"><p><b>${rand(["Fun facts:","Also worth knowing:","Hugh also says:","More info:"])}</b></p>
       <ul>${pickN(moreT, num(2,4)).map(f => `<li>${f(t)}</li>`).join("")}</ul>
@@ -554,7 +555,7 @@
     // build the sections in a random order
     const titles = pickN(titleT, num(6, 9));
     const resultBlock = tf => { const s = nextSite(); return `<div class="result" data-site="${s.name}">
-        <div class="src-line">${fav(s)}<div><div class="site">${s.name}</div>
+        <div class="src-line">${fav(s)}<div><div class="site">${label(s.name)}</div>
         <div class="url">https://www.${s.domain} › ${rand(["","wiki › ","r › ","products › ","watch?v=","blog › "])}${t.replace(/ /g, "-")}</div></div></div>
         <h3>${tf(t,T)}</h3>
         <p>${chance(0.7) ? `<span class="date">${fakeDate()} — </span>` : ""}${rand(snipT)(t)}</p></div>`; };
@@ -566,9 +567,9 @@
     if (chance(0.6)) extras.push(() => `<div class="vids"><h2>Hughdeos</h2>${Array.from({length: num(2,3)}, () => { const s = rand(["HughTube","HughTok"]); return `
       <div class="vid" data-site="${s}"><div class="vid-thumb" style="background:${rand(bgs)}">${rand(emojis)}<span class="len">${num(0,59)}:${String(num(0,59)).padStart(2,"0")}</span></div>
       <div><b>${rand([`${T} PRANK GONE WRONG (cops called)`,`I spent 24 hours inside a ${t}`,`${T} but it gets faster every time`,`Hugh reacts to ${t}`,`${T} SPEEDRUN (world record)`,`Unboxing a ${num(100,999)} year old ${t}`,`${T} vs ${W()} - who wins?`])}</b>
-      <span>${s} · ${num(1,999)}K views · ${num(1,11)} ${rand(["days","weeks","months","years"])} ago</span></div></div>`; }).join("")}</div>`);
+      <span>${label(s)} · ${num(1,999)}K views · ${num(1,11)} ${rand(["days","weeks","months","years"])} ago</span></div></div>`; }).join("")}</div>`);
     if (chance(0.5)) extras.push(() => `<div class="news"><h2>Top stories</h2><div class="news-row">${Array.from({length: num(3,4)}, () => { const s = nextSite(); return `
-      <div class="news-card" data-site="${s.name}"><span style="display:flex;gap:6px;align-items:center">${fav(s)}${s.name}</span>
+      <div class="news-card" data-site="${s.name}"><span style="display:flex;gap:6px;align-items:center">${fav(s)}${label(s.name)}</span>
       <b>${rand([`${T} shortage hits ${rand(["Ohio","Canada","every Walmart","Hugh's house"])}`,`Man finds ${t} in his ${W()}`,`Is ${t} the new ${W()}? Experts say yes`,`${T} prices soar after Hugh tweet`,`Town votes to make ${t} its mascot`,`${T} rescued from ${W()} by firefighters`])}</b>${num(1,23)} hours ago</div>`; }).join("")}</div></div>`);
 
     // keep at least 2 normal links at the top like real search
