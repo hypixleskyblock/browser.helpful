@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hughgle</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #fff; color: #202124;
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  a { color: inherit; text-decoration: none; }
+ 
+  /* Top bar */
+  .topbar {
+    display: flex; justify-content: flex-end; align-items: center;
+    gap: 16px; padding: 14px 20px; font-size: 13px;
+  }
+  .topbar a:hover { text-decoration: underline; }
+  .apps {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: grid; place-items: center; cursor: pointer;
+  }
+  .apps:hover { background: #f1f3f4; }
+  .apps-grid { display: grid; grid-template-columns: repeat(3, 4px); gap: 3px; }
+  .apps-grid span { width: 4px; height: 4px; background: #5f6368; border-radius: 50%; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #1a73e8; color: #fff; font-weight: bold;
+    display: grid; place-items: center; cursor: pointer;
+  }
+ 
+  /* Home */
+  main { flex: 1; display: flex; flex-direction: column; align-items: center; padding-top: 12vh; }
+  .logo { font-size: 92px; font-weight: 500; letter-spacing: -3px; user-select: none; margin-bottom: 28px; }
+  .logo.small { font-size: 30px; letter-spacing: -1px; margin: 0; cursor: pointer; }
+  .b { color: #4285f4; } .r { color: #ea4335; } .y { color: #fbbc05; } .g { color: #34a853; }
+ 
+  .search-wrap { width: 92%; max-width: 584px; position: relative; }
+  .search {
+    display: flex; align-items: center; gap: 12px;
+    border: 1px solid #dfe1e5; border-radius: 24px;
+    height: 48px; padding: 0 14px 0 16px; background: #fff;
+    transition: box-shadow .2s;
+  }
+  .search:hover, .search.focus { box-shadow: 0 1px 6px rgba(32,33,36,.28); border-color: transparent; }
+  .search.cut { animation: shake .35s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .search svg { flex-shrink: 0; }
+  .search input {
+    flex: 1; border: none; outline: none; font-size: 16px; background: transparent; color: #202124;
+  }
+  .search input.hughing { color: #1a0dab; font-weight: bold; }
+  .icon-btn { cursor: pointer; display: grid; place-items: center; }
+  .hugh-mode-btn {
+    display: flex; align-items: center; gap: 6px;
+    border: 1px solid #dadce0; border-radius: 18px; padding: 6px 12px;
+    font-size: 14px; cursor: pointer; background: #fff; white-space: nowrap;
+  }
+  .hugh-mode-btn:hover { background: #f8f9fa; }
+  .sparkle {
+    background: linear-gradient(135deg,#4285f4,#ea4335,#fbbc05,#34a853);
+    -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: bold;
+  }
+ 
+  .buttons { display: flex; gap: 12px; margin-top: 30px; }
+  .btn {
+    background: #f8f9fa; border: 1px solid #f8f9fa; border-radius: 4px;
+    color: #3c4043; font-size: 14px; padding: 0 16px; height: 36px; cursor: pointer;
+  }
+  .btn:hover { border-color: #dadce0; box-shadow: 0 1px 1px rgba(0,0,0,.1); }
+  .offered { margin-top: 28px; font-size: 13px; color: #4d5156; }
+  .offered a { color: #1a0dab; margin: 0 4px; }
+  .offered a:hover { text-decoration: underline; }
+ 
+  .toast {
+    position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #323232; color: #fff; padding: 12px 20px; border-radius: 6px;
+    font-size: 14px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 10;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+ 
+  footer { background: #f2f2f2; font-size: 14px; color: #70757a; }
+  footer .row { padding: 14px 30px; }
+  footer .row + .row { border-top: 1px solid #dadce0; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  footer .links a { margin-right: 26px; }
+  footer a:hover { text-decoration: underline; }
+ 
+  /* Results page */
+  #results { display: none; flex: 1; }
+  .res-head {
+    display: flex; align-items: center; gap: 28px; padding: 20px 28px 0;
+  }
+  .res-head .search-wrap { max-width: 690px; }
+  .tabs { display: flex; gap: 22px; padding: 14px 0 0 180px; font-size: 14px; color: #5f6368; border-bottom: 1px solid #ebebeb; }
+  .tabs span { padding-bottom: 10px; cursor: pointer; }
+  .tabs span.active { color: #1a73e8; border-bottom: 3px solid #1a73e8; }
+  .res-body { padding: 18px 0 40px 180px; max-width: 900px; }
+ 
+  /* Hugh Overview (AI overview look) */
+  .ov { border-bottom: 1px solid #ebebeb; padding-bottom: 18px; margin-bottom: 26px; }
+  .ov-head { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 500; margin-bottom: 14px; }
+  .ov-icon {
+    width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+    background: conic-gradient(#4285f4,#ea4335,#fbbc05,#34a853,#4285f4); color: #fff; font-size: 14px;
+  }
+  .ov-loading { display: flex; flex-direction: column; gap: 10px; }
+  .ov-loading div {
+    height: 14px; border-radius: 7px;
+    background: linear-gradient(90deg,#e8f0fe 25%,#fce8e6 50%,#e8f0fe 75%);
+    background-size: 200% 100%; animation: shimmer 1.1s infinite linear;
+  }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  .ov-grid { display: grid; grid-template-columns: 1fr 230px; gap: 22px; }
+  .ov-text { font-size: 16px; line-height: 1.65; color: #1f1f1f; }
+  .ov-text p { margin-bottom: 12px; }
+  .ov-text ul { margin: 0 0 12px 22px; }
+  .ov-text li { margin-bottom: 8px; }
+  .ov-text .link-chip {
+    display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+    background: #e8eaed; font-size: 12px; vertical-align: middle; margin-left: 4px; cursor: pointer;
+  }
+  .ov-more { max-height: 0; overflow: hidden; transition: max-height .4s; }
+  .ov-more.open { max-height: 700px; }
+  .ov-sources { display: flex; flex-direction: column; gap: 10px; }
+  .src {
+    border: 1px solid #dadce0; border-radius: 14px; padding: 12px; font-size: 13px; cursor: pointer;
+  }
+  .src:hover { background: #f8f9fa; }
+  .src b { display: block; font-size: 14px; color: #1f1f1f; margin-bottom: 6px; line-height: 1.3; }
+  .src span { color: #5f6368; display: flex; align-items: center; gap: 6px; }
+  .fav { width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; color: #fff; font-size: 10px; font-weight: bold; flex-shrink: 0; }
+  .show-more {
+    display: block; width: 100%; margin-top: 8px; padding: 10px; border-radius: 20px;
+    border: 1px solid #dadce0; background: #fff; font-size: 14px; color: #1f1f1f; cursor: pointer;
+  }
+  .show-more:hover { background: #f8f9fa; }
+  .ov-foot { display: flex; align-items: center; gap: 14px; margin-top: 14px; font-size: 12px; color: #5f6368; }
+  .ov-foot .thumb { cursor: pointer; font-size: 16px; }
+ 
+  /* Results */
+  .result { margin-bottom: 30px; }
+  .result .src-line { display: flex; align-items: center; gap: 10px; }
+  .result .fav { width: 28px; height: 28px; font-size: 13px; }
+  .result .site { font-size: 14px; color: #202124; }
+  .result .url { font-size: 12px; color: #4d5156; }
+  .result h3 { font-size: 20px; font-weight: 400; color: #1a0dab; margin: 6px 0 4px; cursor: pointer; }
+  .result h3:hover { text-decoration: underline; }
+  .result p { font-size: 14px; color: #4d5156; line-height: 1.58; }
+  .result .date { color: #70757a; }
+ 
+  /* People also ask */
+  .paa { margin-bottom: 30px; }
+  .paa h2, .imgs h2 { font-size: 20px; font-weight: 400; margin-bottom: 10px; }
+  .q { border-bottom: 1px solid #dadce0; }
+  .q-top { display: flex; justify-content: space-between; padding: 14px 0; cursor: pointer; font-size: 16px; }
+  .q-top .arr { transition: transform .2s; color: #5f6368; }
+  .q.open .arr { transform: rotate(180deg); }
+  .q-ans { max-height: 0; overflow: hidden; transition: max-height .3s; font-size: 14px; color: #4d5156; line-height: 1.6; }
+  .q.open .q-ans { max-height: 200px; padding-bottom: 14px; }
+ 
+  /* Images strip */
+  .imgs { margin-bottom: 30px; }
+  .img-row { display: flex; gap: 8px; overflow-x: auto; }
+  .img-tile {
+    flex: 0 0 150px; height: 120px; border-radius: 10px; display: grid; place-items: center;
+    font-size: 54px; cursor: pointer;
+  }
+  .img-cap { font-size: 12px; color: #5f6368; margin-top: 4px; width: 150px; }
+ 
+  @media (max-width: 760px) { .ov-grid { grid-template-columns: 1fr; } }
+ 
+  @media (max-width: 760px) {
+    .logo { font-size: 60px; }
+    .tabs, .res-body { padding-left: 20px; padding-right: 20px; }
+    .res-head { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .hugh-mode-btn .label { display: none; }
+  }
+</style>
+</head>
+<body>
+ 
+<div class="topbar">
+  <a href="#">Hughmail</a>
+  <a href="#">Hughmages</a>
+  <div class="apps" title="Hughgle apps"><div class="apps-grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+  <div class="avatar" title="Hughgle Account: Hugh">H</div>
+</div>
+ 
+<!-- HOME -->
+<main id="home">
+  <div class="logo">
+    <span class="b">H</span><span class="r">u</span><span class="y">g</span><span class="b">h</span><span class="g">g</span><span class="r">l</span><span class="y">e</span>
+  </div>
+ 
+  <div class="search-wrap">
+    <div class="search" id="box">
+      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#9aa0a6" d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input id="q" type="text" autocomplete="off" spellcheck="false" aria-label="Hughgle Search">
+      <span class="icon-btn" title="Search by Hugh voice">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#4285f4" d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3z"/><path fill="#34a853" d="M11 18.92h2V22h-2z"/><path fill="#fbbc05" d="M7 12H5c0 1.07.25 2.08.68 2.98l1.48-1.48A4.96 4.96 0 0 1 7 12z"/><path fill="#ea4335" d="M12 17c-2.76 0-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92 0 0 3.5-.06 6.32-2.3l-1.42-1.42A4.96 4.96 0 0 1 12 17zm7-5h-2c0 .93-.26 1.8-.71 2.55l1.43 1.43C18.53 14.86 19 13.48 19 12z"/></svg>
+      </span>
+      <span class="hugh-mode-btn" id="hughMode"><span class="sparkle">✦</span><span class="label">Hugh Mode</span></span>
+    </div>
+  </div>
+ 
+  <div class="buttons">
+    <button class="btn" id="searchBtn">Hughgle Search</button>
+    <button class="btn" id="luckyBtn">I'm Feeling Hughy</button>
+  </div>
+  <div class="offered">Hughgle offered in: <a href="#">Hughish</a><a href="#">Español de Hugh</a><a href="#">Hughçais</a></div>
+</main>
+ 
+<!-- RESULTS -->
+<section id="results">
+  <div class="res-head">
+    <div class="logo small" id="homeLogo">
+      <span class="b">H</span><span class="r">u</span><span class="y">g</span><span class="b">h</span><span class="g">g</span><span class="r">l</span><span class="y">e</span>
+    </div>
+    <div class="search-wrap">
+      <div class="search" id="box2">
+        <input id="q2" type="text" autocomplete="off" spellcheck="false">
+        <span class="hugh-mode-btn"><span class="sparkle">✦</span><span class="label">Hugh Mode</span></span>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <span class="active">All</span><span>Hugh Mode</span><span>Hughmages</span><span>Hughdeos</span><span>Hughs</span><span>More</span>
+  </div>
+  <div class="res-body" id="resBody"></div>
+</section>
+ 
+<footer>
+  <div class="row">United States of Hugh</div>
+  <div class="row">
+    <div class="links"><a href="#">About Hugh</a><a href="#">Hughvertising</a><a href="#">Hughsiness</a><a href="#">How Hughgle works</a></div>
+    <div class="links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Settings</a></div>
+  </div>
+</footer>
+ 
+<div class="toast" id="toast"></div>
+ 
+<script>
+  // ---------- random helpers ----------
+  const rand = a => a[Math.floor(Math.random() * a.length)];
+  const num = (lo = 2, hi = 99) => Math.floor(Math.random() * (hi - lo + 1)) + lo;
+  const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const pickN = (a, n) => shuffle(a).slice(0, n);
+  const chance = p => Math.random() < p;
+ 
+  // ---------- the words it cuts you off with ----------
+  const words = [
+    "floor tiles","soggy waffle","lamp","traffic cone","grandma's sock","pickle jar","cardboard","spoon","wet sand",
+    "moist carpet","banana phone","door hinge","tuesday","seven ducks","lukewarm soup","bagel","stapler","garden hose",
+    "beef","doorknob","toaster","gravel","crunchy leaves","angry goose","shoe","lettuce","bubble wrap","cheese wheel",
+    "sock puppet","ceiling fan","brick","flip flop","tax returns","noodle","pigeon","mayonnaise","dishwasher",
+    "a single grape","potato","wallpaper","shopping cart","cucumber","yogurt","radiator","mild salsa","paperclip",
+    "refrigerator magnet","trombone","sandwich","gutter","cabbage","elbow","tire swing","the moon","printer ink",
+    "nacho","raccoon","fence post","spatula","shrimp","leaf blower","bathtub","mustache","office chair","burrito",
+    "sprinkler","oatmeal","bowling ball","hamster","mailbox","sweater vest","frozen peas","kazoo","rubber duck",
+    "parking lot","hot dog bun","vacuum cleaner","lawn gnome","string cheese","tuba","ketchup packet","shower curtain",
+    "baby carrot","roller skate","walrus","pine cone","broccoli","waffle iron","umbrella","fish stick","jellybean",
+    "socks with sandals","microwave","toilet paper","goat","doormat","cereal","calculator","teapot","chicken nugget",
+    "bike pump","eyebrow","snow globe","pancake","coconut","blender","lightbulb","hairbrush","lunchbox","egg",
+    "mop","porcupine","hula hoop","backpack","zucchini","sponge","crocs","flamingo","tortilla","marshmallow",
+    "remote control","bucket","llama","pretzel","alarm clock","trampoline","clam","ice cube","fanny pack","Hugh"
+  ];
+  const connectors = [" "," "," "," and "," with "," of "," in a "," for "," vs "," on a "];
+  let deck = [];
+  function drawWord() {
+    if (!deck.length) deck = shuffle(words);
+    return deck.pop();
+  }
+  const recent = [];
+  function randomPhrase() {
+    let p, tries = 0;
+    do {
+      const n = chance(0.55) ? 1 : (chance(0.75) ? 2 : 3);
+      p = drawWord();
+      for (let i = 1; i < n; i++) p += rand(connectors) + drawWord();
+      tries++;
+    } while (recent.includes(p) && tries < 20);
+    recent.push(p); if (recent.length > 40) recent.shift();
+    return p;
+  }
+ 
+  function toast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 1800);
+  }
+ 
+  // extra styles for videos / news / table
+  const st = document.createElement("style");
+  st.textContent = `
+    .vids, .news { margin-bottom: 30px; }
+    .vids h2, .news h2 { font-size: 20px; font-weight: 400; margin-bottom: 10px; }
+    .vid { display: flex; gap: 14px; margin-bottom: 14px; cursor: pointer; }
+    .vid-thumb { width: 160px; height: 90px; border-radius: 10px; display: grid; place-items: center; font-size: 40px; position: relative; flex-shrink: 0; }
+    .vid-thumb .len { position: absolute; bottom: 5px; right: 6px; background: rgba(0,0,0,.8); color: #fff; font-size: 11px; padding: 1px 4px; border-radius: 3px; }
+    .vid b { color: #1a0dab; font-weight: 400; font-size: 17px; display: block; margin-bottom: 4px; }
+    .vid span { font-size: 13px; color: #5f6368; }
+    .news-row { display: flex; gap: 10px; overflow-x: auto; }
+    .news-card { flex: 0 0 210px; border: 1px solid #dadce0; border-radius: 12px; padding: 12px; cursor: pointer; font-size: 13px; color: #5f6368; }
+    .news-card b { display: block; color: #1f1f1f; font-size: 15px; font-weight: 500; margin: 6px 0; line-height: 1.35; }
+    .ov-table { border-collapse: collapse; margin: 6px 0 14px; font-size: 14px; width: 100%; }
+    .ov-table td, .ov-table th { border: 1px solid #dadce0; padding: 8px 10px; text-align: left; }
+    .ov-table th { background: #f8f9fa; }
+    .ov-text ol { margin: 0 0 12px 22px; }
+    .ov-quote { border-left: 4px solid #4285f4; padding: 6px 14px; margin: 8px 0 14px; font-style: italic; color: #3c4043; }
+  `;
+  document.head.appendChild(st);
+ 
+  function setupBox(input, box) {
+    let typed = 0, limit = newLimit(), hijacking = false;
+    function newLimit() { return 2 + Math.floor(Math.random() * 4); } // cut off after 2–5 keys
+ 
+    input.addEventListener("focus", () => box.classList.add("focus"));
+    input.addEventListener("blur", () => box.classList.remove("focus"));
+ 
+    input.addEventListener("keydown", e => {
+      if (hijacking) { e.preventDefault(); return; }
+      if (e.key === "Enter") { e.preventDefault(); search(input.value || randomPhrase()); return; }
+    });
+ 
+    input.addEventListener("focus", () => { if (input.id === "q2") { input.value = ""; typed = 0; } });
+    input.addEventListener("input", () => {
+      if (hijacking) return;
+      typed++;
+      if (typed >= limit) hijack();
+    });
+ 
+    function hijack() {
+      hijacking = true;
+      const phrase = randomPhrase();
+      box.classList.add("cut");
+      input.value = "";
+      input.classList.add("hughing");
+      input.value = phrase;
+      input.blur();
+      // instantly "press enter" for them
+      setTimeout(() => {
+        box.classList.remove("cut");
+        hijacking = false; typed = 0; limit = newLimit();
+        input.value = "";
+        input.classList.remove("hughing");
+        search(phrase);
+      }, 120);
+    }
+  }
+ 
+  setupBox(document.getElementById("q"), document.getElementById("box"));
+  setupBox(document.getElementById("q2"), document.getElementById("box2"));
+ 
+  const siteList = [
+    { name: "Hughipedia", domain: "hughipedia.org", color: "#555" },
+    { name: "HughTube", domain: "hughtube.com", color: "#ea4335" },
+    { name: "Reddhugh", domain: "reddhugh.com", color: "#ff5700" },
+    { name: "Hughmazon", domain: "hughmazon.com", color: "#f90" },
+    { name: "WebHughMD", domain: "webhughmd.com", color: "#1a73e8" },
+    { name: "HughzFeed", domain: "hughzfeed.com", color: "#e32" },
+    { name: "Quorhugh", domain: "quorhugh.com", color: "#b92b27" },
+    { name: "wikiHugh", domain: "wikihugh.com", color: "#34a853" },
+    { name: "HughTok", domain: "hughtok.com", color: "#111" },
+    { name: "Pinterhugh", domain: "pinterhugh.com", color: "#e60023" },
+    { name: "Hugh York Times", domain: "hughyorktimes.com", color: "#333" },
+    { name: "HughBay", domain: "hughbay.com", color: "#0064d2" },
+    { name: "Hugh Depot", domain: "hughdepot.com", color: "#f96302" },
+    { name: "Hughflix", domain: "hughflix.com", color: "#e50914" },
+    { name: "National Hughographic", domain: "nathughgeo.com", color: "#fc0" },
+    { name: "Hughpost", domain: "hughpost.com", color: "#2bb24c" },
+    { name: "Hugh's Blog", domain: "hughsblog.net", color: "#8e44ad" },
+    { name: "HughNN", domain: "hughnn.com", color: "#c00" },
+  ];
+ 
+  const W = () => drawWord();
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const fakeDate = () => `${rand(months)} ${num(1, 28)}, ${num(1998, 2026)}`;
+ 
+  // ---------- result titles ----------
+  const titleT = [
+    (t,T) => `${T} - Hughipedia`,
+    (t,T) => `I Tried Eating ${T} for ${num(3,60)} Days (NOT CLICKBAIT)`,
+    (t,T) => `r/${t.replace(/[^a-z]/gi,"")} - Is it normal for my ${t} to make noise at night?`,
+    (t,T) => `${T} : Hughmazon.com : Everything Else`,
+    (t,T) => `WebHughMD: Symptoms of having too much ${t}`,
+    (t,T) => `${num(5,99)} ${T} Facts That Will Make You Say "Huh?"`,
+    (t,T) => `Help!! My ${rand(["dog","cat","little brother","grandpa","hamster"])} ate ${t}`,
+    (t,T) => `How to Build a House Out of ${T} (Step by Step)`,
+    (t,T) => `${T} vs ${W()} - Which is better? (${num(2019,2026)})`,
+    (t,T) => `Why is ${t} so expensive now??`,
+    (t,T) => `The ${num(10,50)} Best ${T} Recipes for Beginners`,
+    (t,T) => `${T} - Wikihugh: How to ${rand(["Train","Clean","Befriend","Fold","Pet","Return"])} Your ${T}`,
+    (t,T) => `Scientists Discover ${T} Can ${rand(["Talk","Fly","Smell Fear","Do Taxes","Hear Music","Dance"])}`,
+    (t,T) => `${T} Simulator 2026 - Play Free Online`,
+    (t,T) => `My wife left me for ${t}. AMA`,
+    (t,T) => `Is ${t} a ${rand(["fruit","vegetable","mammal","sport","personality trait","crime"])}? Experts Weigh In`,
+    (t,T) => `Buy ${T} Online | Free Shipping | Hugh Depot`,
+    (t,T) => `${T} ASMR (${num(1,10)} hours, no talking)`,
+    (t,T) => `What Your Favorite ${T} Says About Your Personality`,
+    (t,T) => `Local Man Hugh Arrested for Too Much ${T}`,
+    (t,T) => `${T} Tier List (ALL ${num(20,400)} RANKED)`,
+    (t,T) => `Is it illegal to own ${t} in ${rand(["Ohio","Florida","Canada","the ocean","school","Hugh's house"])}?`,
+    (t,T) => `${T} - Official Site`,
+    (t,T) => `${T} Prices Drop ${num(10,99)}% After Hugh Refuses to Buy Any`,
+    (t,T) => `${T} Explained in ${num(2,9)} Minutes`,
+    (t,T) => `Does ${t} go bad? How long does ${t} last?`,
+    (t,T) => `${T} Memes That Hit Different`,
+    (t,T) => `Hugh's ${T} Review: ${num(1,10)}/10`,
+    (t,T) => `How Many ${T}s Fit in a Car? We Found Out`,
+    (t,T) => `${T} for Sale | HughBay`,
+    (t,T) => `${T} (Band) - Discography, Tour Dates`,
+    (t,T) => `${T} Day ${num(1,999)}: Still No Answers`,
+  ];
+ 
+  // ---------- snippets ----------
+  const snipT = [
+    t => `Listen. I have been dealing with ${t} for ${num()} years and nobody believes me...`,
+    t => `${t[0].toUpperCase()+t.slice(1)} is a ${W()}-based product used mostly by Hugh. It was invented after an accident involving ${W()}.`,
+    t => `★★★★☆ Rating: ${(Math.random()*2+3).toFixed(1)} · ${num(10,999)} reviews · $${num(1,999)}.99 · Free delivery by Hugh`,
+    t => `Ok so update: the ${t} is now in the garage and it is staring at me. Should I call someone??`,
+    t => `Day ${num()}: I can no longer feel my ${rand(["toes","eyebrows","elbows","personality","ears"])}. Would I recommend ${t}? Absolutely.`,
+    t => `Our experts tested ${num()} types of ${t} so you don't have to. Number ${num(1,9)} will shock you.`,
+    t => `Edit: thanks for the gold kind stranger. Edit 2: the ${t} is gone. Edit 3: it came back.`,
+    t => `Fun fact: the average person swallows ${num(2,9)} ${t}s in their sleep every year.`,
+    t => `Step 1: Get ${t}. Step 2: Get ${W()}. Step 3: Do not tell your mom.`,
+    t => `Wait until the end. You won't believe what Hugh did with the ${t}. 😱😱😱`,
+    t => `In stock. Only ${num(1,4)} left! Customers who bought ${t} also bought ${W()}.`,
+    t => `My grandpa always said "never trust a ${t}". I didn't listen. Big mistake.`,
+    t => `${num(60,99)}% of dentists recommend ${t}. The other ${num(1,40)}% are being investigated.`,
+    t => `No. Just no. Do not put ${t} in the ${rand(["toaster","washing machine","fish tank","oven","bathtub"])}. Trust me.`,
+    t => `Breaking: ${t} spotted at the mall again. Witnesses say it was "about the size of ${W()}."`,
+    t => `This thread has been locked because everyone started arguing about ${W()}.`,
+    t => `Is it just me or does ${t} look like ${W()} if you squint?`,
+    t => `Hugh personally approved this ${t}. Hugh did not personally approve the ${W()}.`,
+    t => `Directions: Apply ${t} twice daily. Side effects may include ${W()} and mild ${rand(["dancing","sneezing","confidence","yelling"])}.`,
+    t => `We are not responsible for any ${t}-related injuries. Please ${t} responsibly.`,
+  ];
+ 
+  // ---------- Hugh Overview styles ----------
+  const factT = [
+    t => `<b>Size:</b> About as big as ${num()} ${W()}s stacked on top of each other.`,
+    t => `<b>Taste:</b> Most people say it tastes like ${W()}, but Hugh says it tastes like ${W()}.`,
+    t => `<b>Safety:</b> ${rand(["Safe to eat in small amounts.","Do NOT put it in the microwave.","Keep away from geese.","Totally safe, probably.","Legal in 49 states.","Wear a helmet."])}`,
+    t => `<b>Weight:</b> ${num(1,900)} pounds, or ${num(1,40)} Hughs.`,
+    t => `<b>Lifespan:</b> Can live up to ${num(2,300)} years if kept in ${rand(["a cool dry place","a sock drawer","the freezer","Ohio"])}.`,
+    t => `<b>Diet:</b> Eats mainly ${W()} and the occasional ${W()}.`,
+    t => `<b>Color:</b> Usually ${rand(["beige","neon green","see-through","plaid","brown-ish","every color at once"])}.`,
+    t => `<b>Speed:</b> Top speed of ${num(1,400)} mph when ${rand(["scared","hungry","downhill","thrown by Hugh"])}.`,
+    t => `<b>Sound:</b> Makes a noise like a ${W()} being stepped on.`,
+    t => `<b>Population:</b> There are roughly ${num(2,999)} million of them, mostly in ${rand(["Canada","Hugh's room","Walmart","the sewer"])}.`,
+    t => `<b>Smell:</b> Similar to ${W()}, but stronger.`,
+    t => `<b>Natural enemy:</b> The ${W()}.`,
+    t => `<b>Price:</b> About $${num(1,999)} or ${num(2,30)} ${W()}s.`,
+    t => `<b>Invented:</b> In ${num(1400,2024)} by Hugh, while looking for ${W()}.`,
+  ];
+  const chips = () => chance(0.6) ? `<span class="link-chip">🔗</span>` : "";
+ 
+  const overviewT = [
+    // definition + facts
+    (t,T) => `<p><b>${T}</b> is a ${rand(["household object","type of snack","small animal","popular hobby","feeling","building material","musical instrument","weather event","dance move"])} commonly found in ${rand(["kitchens","Ohio","the ocean","Hugh's backpack","gas stations","outer space","the back of the fridge","school bathrooms"])}.${chips()}</p>
+      <p><b>Key facts about ${t}:</b></p><ul>${pickN(factT, num(3,5)).map(f => `<li>${f(t)}${chips()}</li>`).join("")}</ul>`,
+    // yes/no answer
+    (t,T) => `<p><b>${rand(["Yes","No","Maybe","Absolutely not","Yes, but only on Tuesdays","Hugh says yes"])}.</b> ${T} is ${rand(["completely normal","not recommended","a great idea","banned in some countries","surprisingly popular"])}, especially if you also have ${W()}.${chips()}</p>
+      <p>Here's why:</p><ul>${Array.from({length:num(3,4)}, () => `<li>${rand([`It helps with ${W()}.`,`Doctors trust it more than ${W()}.`,`It was Hugh's idea.`,`It goes great with ${W()}.`,`Nobody has complained yet (except ${W()}).`,`It's cheaper than ${W()}.`,`It's ${num(2,9)}x stronger than ${W()}.`])}${chips()}</li>`).join("")}</ul>`,
+    // how-to steps
+    (t,T) => `<p>To get the most out of <b>${t}</b>, follow these steps:${chips()}</p>
+      <ol>${Array.from({length:num(4,6)}, () => `<li>${rand(["Gently","Quickly","Carefully","Aggressively","Silently","Lovingly"])} ${rand(["place","shake","whisper to","freeze","wrap","throw"])} the ${t} ${rand(["into","next to","on top of","under","far away from"])} a ${W()}.${chips()}</li>`).join("")}</ol>
+      <p>If done correctly, it should ${rand(["start glowing","smell like "+W(),"make a beeping noise","disappear","become your friend"])}.</p>`,
+    // comparison table
+    (t,T) => { const o = W(); return `<p><b>${T}</b> and <b>${o}</b> are often confused, but they are very different.${chips()}</p>
+      <table class="ov-table"><tr><th></th><th>${T}</th><th>${o}</th></tr>
+      ${["Price","Weight","Tastes like","Hugh's rating"].map(r => `<tr><td>${r}</td><td>${r==="Price"?"$"+num(1,500):r==="Weight"?num(1,99)+" lbs":r==="Tastes like"?W():num(1,10)+"/10"}</td><td>${r==="Price"?"$"+num(1,500):r==="Weight"?num(1,99)+" lbs":r==="Tastes like"?W():num(1,10)+"/10"}</td></tr>`).join("")}
+      </table><p>Overall, Hugh recommends <b>${rand([t,o])}</b>.</p>`; },
+    // history + quote
+    (t,T) => `<p>The history of <b>${t}</b> goes back to ${num(1200,1999)}, when ${rand(["a farmer","a king","a confused dog","Hugh's great-great-grandpa","a wizard"])} accidentally made it out of ${W()}.${chips()}</p>
+      <div class="ov-quote">"${rand([`I have never seen anything like ${t}.`,`The ${t} looked at me and I looked back.`,`${T} changed my life. Mostly for the worse.`,`Give me ${t} or give me ${W()}.`])}" — ${rand(["Abraham Lincoln (probably)","Hugh","a guy at Walmart","Hugh's dog","Albert Einstein (not really)"])}</div>
+      <p>Today, about <b>${num(2,98)}%</b> of people own at least one ${t}.${chips()}</p>`,
+    // math-y / numbers answer
+    (t,T) => `<p><b>${num(2,9999)}</b> is the answer. ${T} equals ${num()} ${W()}s divided by ${num()}, rounded to the nearest Hugh.${chips()}</p>
+      <ul><li>${T} × 2 = ${W()}</li><li>${T} + ${W()} = ${W()}</li><li>${T} ÷ 0 = Hugh${chips()}</li></ul>`,
+  ];
+  const moreT = [
+    t => `The world record for holding ${t} is ${num()} hours, set by Hugh in a parking lot.`,
+    t => `Scientists believe ${t} is ${num()}% related to ${W()}.`,
+    t => `If you say "${t}" three times in a mirror, nothing happens.`,
+    t => `${t[0].toUpperCase()+t.slice(1)} was briefly banned in ${rand(["France","Hugh's school","the Olympics","space"])} in ${num(1950,2025)}.`,
+    t => `A group of ${t}s is called a "${rand(["clump","Hughddle","squad","mess","situation"])}".`,
+    t => `NASA has sent ${num(1,12)} ${t}s into space. None came back.`,
+    t => `The first ${t} cost only ${num(1,9)} cents.`,
+    t => `Hugh owns ${num(2,400)} of them.`,
+  ];
+  const disclaimers = ["Hugh Overviews may include mistakes. Hugh does not care.","Hugh Overviews are for entertainment purposes. Mostly Hugh's.","This answer was generated by Hugh in 0.2 seconds. It shows.","Hugh is experimental. Hugh may hallucinate. Hugh is probably fine."];
+ 
+  // ---------- People also ask ----------
+  const paaT = [
+    t => [`Is ${t} alive?`, `Hugh says yes. Scientists say no. Hugh is more trustworthy.`],
+    t => [`Can you eat ${t}?`, `Technically you can eat anything once. ${t[0].toUpperCase()+t.slice(1)} is no exception.`],
+    t => [`Why does ${t} smell like ${W()}?`, `This is still being studied. The current theory is "because."`],
+    t => [`How much does ${t} cost?`, `About ${num()} Hugh Dollars, or ${num()} ${W()}s if you trade.`],
+    t => [`Can dogs have ${t}?`, `Only on weekends, and only if the dog asks nicely.`],
+    t => [`Who invented ${t}?`, `Hugh. Next question.`],
+    t => [`Is ${t} better than ${W()}?`, `Yes. ${num(60,99)}% of people agree. The rest were not asked.`],
+    t => [`What happens if you microwave ${t}?`, `The microwave becomes ${rand(["sentient","sad","a " + W(),"famous"])}. Do not try this.`],
+    t => [`How do I get rid of ${t}?`, `You don't. It gets rid of you.`],
+    t => [`Is ${t} a real word?`, `It is now.`],
+    t => [`Where can I find ${t} near me?`, `Check behind the couch, then check behind the other couch.`],
+    t => [`Why is everyone talking about ${t}?`, `Because Hugh posted about it at 3am and it went viral.`],
+    t => [`What does ${t} mean in slang?`, `It means "${rand(["cool","bro","I'm hungry","leave me alone","no cap"])}". Use it carefully.`],
+    t => [`How many ${t}s are there in the world?`, `Exactly ${num(1000,99999)}. Hugh counted.`],
+  ];
+ 
+  const emojis = ["🧱","🦆","🥒","🧦","🪿","🍞","🛞","🧀","🥔","🦝","🪣","🍌","🥯","🐐","🦩","🧽","🌽","🎺","🛁","🥫","🪑","🍕","🐸","🧲","🪥","🥨","🦔","🪴","🧇","🍄","🐌","🦙"];
+  const bgs = ["#fde7e4","#e3f1fd","#fef6d8","#e5f5e8","#f1e8fd","#fff0e0","#e0f7f7"];
+ 
+  function search(term) {
+    document.getElementById("home").style.display = "none";
+    document.querySelector("footer").style.display = "none";
+    document.getElementById("results").style.display = "block";
+    const q2 = document.getElementById("q2");
+    q2.value = term; q2.classList.remove("hughing"); q2.blur();
+    document.title = term + " - Hughgle Search";
+ 
+    const t = term, T = term.charAt(0).toUpperCase() + term.slice(1);
+    const sites = shuffle(siteList);
+    let si = 0;
+    const nextSite = () => sites[si++ % sites.length];
+    const fav = s => `<span class="fav" style="background:${s.color}">${s.name[0]}</span>`;
+ 
+    // overview
+    const sources = Array.from({length: num(2,4)}, () => { const s = nextSite(); return `
+      <div class="src"><b>${rand(titleT)(t,T)}</b><span>${fav(s)}${s.name}</span></div>`; }).join("");
+    const overview = rand(overviewT)(t, T) + `
+      <div class="ov-more" id="ovMore"><p><b>${rand(["Fun facts:","Also worth knowing:","Hugh also says:","More info:"])}</b></p>
+      <ul>${pickN(moreT, num(2,4)).map(f => `<li>${f(t)}</li>`).join("")}</ul>
+      <p>In summary, <b>${t}</b> is ${rand(["very important","kind of mid","the future","a mystery even to Hugh","10/10","not something to search at school","overrated","underrated","Hugh-approved"])}.</p></div>`;
+ 
+    let html = `<div class="ov">
+        <div class="ov-head"><span class="ov-icon">✦</span>${rand(["Hugh Overview","Hugh Overview","Hugh Mode says"])}</div>
+        <div class="ov-loading" id="ovLoad">${Array.from({length: num(3,5)}, () => `<div style="width:${num(55,96)}%"></div>`).join("")}</div>
+        <div id="ovReal" style="display:none">
+          <div class="ov-grid"><div class="ov-text">${overview}</div><div class="ov-sources">${sources}</div></div>
+          <button class="show-more" id="showMore">Show more ⌄</button>
+          <div class="ov-foot">${rand(disclaimers)} <span class="thumb">👍</span><span class="thumb">👎</span></div>
+        </div></div>`;
+ 
+    // build the sections in a random order
+    const titles = pickN(titleT, num(6, 9));
+    const resultBlock = tf => { const s = nextSite(); return `<div class="result">
+        <div class="src-line">${fav(s)}<div><div class="site">${s.name}</div>
+        <div class="url">https://www.${s.domain} › ${rand(["","wiki › ","r › ","products › ","watch?v=","blog › "])}${t.replace(/ /g, "-")}</div></div></div>
+        <h3>${tf(t,T)}</h3>
+        <p>${chance(0.7) ? `<span class="date">${fakeDate()} — </span>` : ""}${rand(snipT)(t)}</p></div>`; };
+ 
+    const extras = [];
+    extras.push(() => `<div class="paa"><h2>People also ask</h2>${pickN(paaT, num(3,5)).map(f => { const q = f(t); return `<div class="q"><div class="q-top">${q[0]}<span class="arr">⌄</span></div><div class="q-ans">${q[1]}</div></div>`; }).join("")}</div>`);
+    if (chance(0.75)) extras.push(() => `<div class="imgs"><h2>Hughmages</h2><div class="img-row">${Array.from({length: num(5,8)}, () =>
+      `<div><div class="img-tile" style="background:${rand(bgs)}">${rand(emojis)}</div><div class="img-cap">${rand([t+" (real photo)", t+" in the wild", "Hugh with "+t, t+" at night", "rare "+t, t+" (not AI)"])}</div></div>`).join("")}</div></div>`);
+    if (chance(0.6)) extras.push(() => `<div class="vids"><h2>Hughdeos</h2>${Array.from({length: num(2,3)}, () => { const s = rand(["HughTube","HughTok"]); return `
+      <div class="vid"><div class="vid-thumb" style="background:${rand(bgs)}">${rand(emojis)}<span class="len">${num(0,59)}:${String(num(0,59)).padStart(2,"0")}</span></div>
+      <div><b>${rand([`${T} PRANK GONE WRONG (cops called)`,`I spent 24 hours inside a ${t}`,`${T} but it gets faster every time`,`Hugh reacts to ${t}`,`${T} SPEEDRUN (world record)`,`Unboxing a ${num(100,999)} year old ${t}`,`${T} vs ${W()} - who wins?`])}</b>
+      <span>${s} · ${num(1,999)}K views · ${num(1,11)} ${rand(["days","weeks","months","years"])} ago</span></div></div>`; }).join("")}</div>`);
+    if (chance(0.5)) extras.push(() => `<div class="news"><h2>Top stories</h2><div class="news-row">${Array.from({length: num(3,4)}, () => { const s = nextSite(); return `
+      <div class="news-card"><span style="display:flex;gap:6px;align-items:center">${fav(s)}${s.name}</span>
+      <b>${rand([`${T} shortage hits ${rand(["Ohio","Canada","every Walmart","Hugh's house"])}`,`Man finds ${t} in his ${W()}`,`Is ${t} the new ${W()}? Experts say yes`,`${T} prices soar after Hugh tweet`,`Town votes to make ${t} its mascot`,`${T} rescued from ${W()} by firefighters`])}</b>${num(1,23)} hours ago</div>`; }).join("")}</div></div>`);
+ 
+    // keep at least 2 normal links at the top like real search
+    const top = titles.slice(0, 2).map(tf => resultBlock(tf));
+    html += top.join("") + shuffle(titles.slice(2).map(tf => () => resultBlock(tf)).concat(extras)).map(f => f()).join("");
+ 
+    document.getElementById("resBody").innerHTML = html;
+    window.scrollTo(0, 0);
+ 
+    setTimeout(() => {
+      document.getElementById("ovLoad").style.display = "none";
+      document.getElementById("ovReal").style.display = "block";
+    }, num(700, 1800));
+    document.getElementById("showMore").onclick = function () {
+      const m = document.getElementById("ovMore");
+      m.classList.toggle("open");
+      this.textContent = m.classList.contains("open") ? "Show less ⌃" : "Show more ⌄";
+    };
+    document.querySelectorAll(".q-top").forEach(q => q.onclick = () => q.parentElement.classList.toggle("open"));
+    document.querySelectorAll(".result h3, .src, .img-tile, .link-chip, .vid, .news-card").forEach(el =>
+      el.onclick = () => toast(rand(["This website has been eaten by Hugh.","404: Hugh took this page.","This link is on a lunch break.","Hugh says no.","Page moved to Hugh's basement."])));
+    document.querySelectorAll(".thumb").forEach(el => el.onclick = () => toast("Hugh has noted your feedback and ignored it."));
+  }
+ 
+  document.getElementById("searchBtn").onclick = () => search(document.getElementById("q").value || randomPhrase());
+  document.getElementById("luckyBtn").onclick = () => toast("You are feeling extremely Hughy. Result: " + randomPhrase());
+  document.getElementById("hughMode").onclick = () => toast("✦ Hugh Mode activated. Hugh will now answer everything.");
+  document.getElementById("homeLogo").onclick = () => {
+    document.getElementById("results").style.display = "none";
+    document.getElementById("home").style.display = "flex";
+    document.querySelector("footer").style.display = "block";
+    const q = document.getElementById("q"); q.value = ""; q.classList.remove("hughing"); q.focus();
+  };
+  document.querySelectorAll(".topbar a, .offered a, footer a, .avatar, .apps").forEach(el =>
+    el.addEventListener("click", e => { e.preventDefault(); toast("Hugh is still building that."); })
+  );
+  document.getElementById("q").focus();
+</script>
+</body>
+</html>
