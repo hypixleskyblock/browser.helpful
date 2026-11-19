@@ -12,7 +12,7 @@
     min-height: 100vh; display: flex; flex-direction: column;
   }
   a { color: inherit; text-decoration: none; }
- 
+
   /* Top bar */
   .topbar {
     display: flex; justify-content: flex-end; align-items: center;
@@ -31,13 +31,13 @@
     background: #1a73e8; color: #fff; font-weight: bold;
     display: grid; place-items: center; cursor: pointer;
   }
- 
+
   /* Home */
   main { flex: 1; display: flex; flex-direction: column; align-items: center; padding-top: 12vh; }
   .logo { font-size: 92px; font-weight: 500; letter-spacing: -3px; user-select: none; margin-bottom: 28px; }
   .logo.small { font-size: 30px; letter-spacing: -1px; margin: 0; cursor: pointer; }
   .b { color: #4285f4; } .r { color: #ea4335; } .y { color: #fbbc05; } .g { color: #34a853; }
- 
+
   .search-wrap { width: 92%; max-width: 584px; position: relative; }
   .search {
     display: flex; align-items: center; gap: 12px;
@@ -68,7 +68,7 @@
     background: linear-gradient(135deg,#4285f4,#ea4335,#fbbc05,#34a853);
     -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: bold;
   }
- 
+
   .buttons { display: flex; gap: 12px; margin-top: 30px; }
   .btn {
     background: #f8f9fa; border: 1px solid #f8f9fa; border-radius: 4px;
@@ -78,20 +78,20 @@
   .offered { margin-top: 28px; font-size: 13px; color: #4d5156; }
   .offered a { color: #1a0dab; margin: 0 4px; }
   .offered a:hover { text-decoration: underline; }
- 
+
   .toast {
     position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%) translateY(20px);
     background: #323232; color: #fff; padding: 12px 20px; border-radius: 6px;
     font-size: 14px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 10;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
- 
+
   footer { background: #f2f2f2; font-size: 14px; color: #70757a; }
   footer .row { padding: 14px 30px; }
   footer .row + .row { border-top: 1px solid #dadce0; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
   footer .links a { margin-right: 26px; }
   footer a:hover { text-decoration: underline; }
- 
+
   /* Results page */
   #results { display: none; flex: 1; }
   .res-head {
@@ -102,7 +102,7 @@
   .tabs span { padding-bottom: 10px; cursor: pointer; }
   .tabs span.active { color: #1a73e8; border-bottom: 3px solid #1a73e8; }
   .res-body { padding: 18px 0 40px 180px; max-width: 900px; }
- 
+
   /* Hugh Overview (AI overview look) */
   .ov { border-bottom: 1px solid #ebebeb; padding-bottom: 18px; margin-bottom: 26px; }
   .ov-head { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 500; margin-bottom: 14px; }
@@ -143,7 +143,7 @@
   .show-more:hover { background: #f8f9fa; }
   .ov-foot { display: flex; align-items: center; gap: 14px; margin-top: 14px; font-size: 12px; color: #5f6368; }
   .ov-foot .thumb { cursor: pointer; font-size: 16px; }
- 
+
   /* Results */
   .result { margin-bottom: 30px; }
   .result .src-line { display: flex; align-items: center; gap: 10px; }
@@ -154,7 +154,7 @@
   .result h3:hover { text-decoration: underline; }
   .result p { font-size: 14px; color: #4d5156; line-height: 1.58; }
   .result .date { color: #70757a; }
- 
+
   /* People also ask */
   .paa { margin-bottom: 30px; }
   .paa h2, .imgs h2 { font-size: 20px; font-weight: 400; margin-bottom: 10px; }
@@ -164,7 +164,7 @@
   .q.open .arr { transform: rotate(180deg); }
   .q-ans { max-height: 0; overflow: hidden; transition: max-height .3s; font-size: 14px; color: #4d5156; line-height: 1.6; }
   .q.open .q-ans { max-height: 200px; padding-bottom: 14px; }
- 
+
   /* Images strip */
   .imgs { margin-bottom: 30px; }
   .img-row { display: flex; gap: 8px; overflow-x: auto; }
@@ -173,9 +173,9 @@
     font-size: 54px; cursor: pointer;
   }
   .img-cap { font-size: 12px; color: #5f6368; margin-top: 4px; width: 150px; }
- 
+
   @media (max-width: 760px) { .ov-grid { grid-template-columns: 1fr; } }
- 
+
   @media (max-width: 760px) {
     .logo { font-size: 60px; }
     .tabs, .res-body { padding-left: 20px; padding-right: 20px; }
@@ -185,20 +185,20 @@
 </style>
 </head>
 <body>
- 
+
 <div class="topbar">
   <a href="#">Hughmail</a>
   <a href="#">Hughmages</a>
   <div class="apps" title="Hughgle apps"><div class="apps-grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
   <div class="avatar" title="Hughgle Account: Hugh">H</div>
 </div>
- 
+
 <!-- HOME -->
 <main id="home">
   <div class="logo">
     <span class="b">H</span><span class="r">u</span><span class="y">g</span><span class="b">h</span><span class="g">g</span><span class="r">l</span><span class="y">e</span>
   </div>
- 
+
   <div class="search-wrap">
     <div class="search" id="box">
       <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#9aa0a6" d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -209,14 +209,14 @@
       <span class="hugh-mode-btn" id="hughMode"><span class="sparkle">✦</span><span class="label">Hugh Mode</span></span>
     </div>
   </div>
- 
+
   <div class="buttons">
     <button class="btn" id="searchBtn">Hughgle Search</button>
     <button class="btn" id="luckyBtn">I'm Feeling Hughy</button>
   </div>
   <div class="offered">Hughgle offered in: <a href="#">Hughish</a><a href="#">Español de Hugh</a><a href="#">Hughçais</a></div>
 </main>
- 
+
 <!-- RESULTS -->
 <section id="results">
   <div class="res-head">
@@ -235,7 +235,7 @@
   </div>
   <div class="res-body" id="resBody"></div>
 </section>
- 
+
 <footer>
   <div class="row">United States of Hugh</div>
   <div class="row">
@@ -243,9 +243,9 @@
     <div class="links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Settings</a></div>
   </div>
 </footer>
- 
+
 <div class="toast" id="toast"></div>
- 
+
 <script>
   // ---------- random helpers ----------
   const rand = a => a[Math.floor(Math.random() * a.length)];
@@ -253,7 +253,7 @@
   const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const pickN = (a, n) => shuffle(a).slice(0, n);
   const chance = p => Math.random() < p;
- 
+
   // ---------- the words it cuts you off with ----------
   const words = [
     "floor tiles","soggy waffle","lamp","traffic cone","grandma's sock","pickle jar","cardboard","spoon","wet sand",
@@ -289,13 +289,13 @@
     recent.push(p); if (recent.length > 40) recent.shift();
     return p;
   }
- 
+
   function toast(msg) {
     const t = document.getElementById("toast");
     t.textContent = msg; t.classList.add("show");
     clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 1800);
   }
- 
+
   // extra styles for videos / news / table
   const st = document.createElement("style");
   st.textContent = `
@@ -316,26 +316,26 @@
     .ov-quote { border-left: 4px solid #4285f4; padding: 6px 14px; margin: 8px 0 14px; font-style: italic; color: #3c4043; }
   `;
   document.head.appendChild(st);
- 
+
   function setupBox(input, box) {
     let typed = 0, limit = newLimit(), hijacking = false;
     function newLimit() { return 2 + Math.floor(Math.random() * 4); } // cut off after 2–5 keys
- 
+
     input.addEventListener("focus", () => box.classList.add("focus"));
     input.addEventListener("blur", () => box.classList.remove("focus"));
- 
+
     input.addEventListener("keydown", e => {
       if (hijacking) { e.preventDefault(); return; }
       if (e.key === "Enter") { e.preventDefault(); search(input.value || randomPhrase()); return; }
     });
- 
+
     input.addEventListener("focus", () => { if (input.id === "q2") { input.value = ""; typed = 0; } });
     input.addEventListener("input", () => {
       if (hijacking) return;
       typed++;
       if (typed >= limit) hijack();
     });
- 
+
     function hijack() {
       hijacking = true;
       const phrase = randomPhrase();
@@ -354,10 +354,11 @@
       }, 120);
     }
   }
- 
+
   setupBox(document.getElementById("q"), document.getElementById("box"));
   setupBox(document.getElementById("q2"), document.getElementById("box2"));
- 
+
+  const HUGHTUBE_URL = "https://ethan-build-web.github.io/ETsgame/";
   const siteList = [
     { name: "Hughipedia", domain: "hughipedia.org", color: "#555" },
     { name: "HughTube", domain: "hughtube.com", color: "#ea4335" },
@@ -378,11 +379,11 @@
     { name: "Hugh's Blog", domain: "hughsblog.net", color: "#8e44ad" },
     { name: "HughNN", domain: "hughnn.com", color: "#c00" },
   ];
- 
+
   const W = () => drawWord();
   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const fakeDate = () => `${rand(months)} ${num(1, 28)}, ${num(1998, 2026)}`;
- 
+
   // ---------- result titles ----------
   const titleT = [
     (t,T) => `${T} - Hughipedia`,
@@ -418,7 +419,7 @@
     (t,T) => `${T} (Band) - Discography, Tour Dates`,
     (t,T) => `${T} Day ${num(1,999)}: Still No Answers`,
   ];
- 
+
   // ---------- snippets ----------
   const snipT = [
     t => `Listen. I have been dealing with ${t} for ${num()} years and nobody believes me...`,
@@ -442,7 +443,7 @@
     t => `Directions: Apply ${t} twice daily. Side effects may include ${W()} and mild ${rand(["dancing","sneezing","confidence","yelling"])}.`,
     t => `We are not responsible for any ${t}-related injuries. Please ${t} responsibly.`,
   ];
- 
+
   // ---------- Hugh Overview styles ----------
   const factT = [
     t => `<b>Size:</b> About as big as ${num()} ${W()}s stacked on top of each other.`,
@@ -461,7 +462,7 @@
     t => `<b>Invented:</b> In ${num(1400,2024)} by Hugh, while looking for ${W()}.`,
   ];
   const chips = () => chance(0.6) ? `<span class="link-chip">🔗</span>` : "";
- 
+
   const overviewT = [
     // definition + facts
     (t,T) => `<p><b>${T}</b> is a ${rand(["household object","type of snack","small animal","popular hobby","feeling","building material","musical instrument","weather event","dance move"])} commonly found in ${rand(["kitchens","Ohio","the ocean","Hugh's backpack","gas stations","outer space","the back of the fridge","school bathrooms"])}.${chips()}</p>
@@ -497,7 +498,7 @@
     t => `Hugh owns ${num(2,400)} of them.`,
   ];
   const disclaimers = ["Hugh Overviews may include mistakes. Hugh does not care.","Hugh Overviews are for entertainment purposes. Mostly Hugh's.","This answer was generated by Hugh in 0.2 seconds. It shows.","Hugh is experimental. Hugh may hallucinate. Hugh is probably fine."];
- 
+
   // ---------- People also ask ----------
   const paaT = [
     t => [`Is ${t} alive?`, `Hugh says yes. Scientists say no. Hugh is more trustworthy.`],
@@ -515,10 +516,10 @@
     t => [`What does ${t} mean in slang?`, `It means "${rand(["cool","bro","I'm hungry","leave me alone","no cap"])}". Use it carefully.`],
     t => [`How many ${t}s are there in the world?`, `Exactly ${num(1000,99999)}. Hugh counted.`],
   ];
- 
+
   const emojis = ["🧱","🦆","🥒","🧦","🪿","🍞","🛞","🧀","🥔","🦝","🪣","🍌","🥯","🐐","🦩","🧽","🌽","🎺","🛁","🥫","🪑","🍕","🐸","🧲","🪥","🥨","🦔","🪴","🧇","🍄","🐌","🦙"];
   const bgs = ["#fde7e4","#e3f1fd","#fef6d8","#e5f5e8","#f1e8fd","#fff0e0","#e0f7f7"];
- 
+
   function search(term) {
     document.getElementById("home").style.display = "none";
     document.querySelector("footer").style.display = "none";
@@ -526,21 +527,21 @@
     const q2 = document.getElementById("q2");
     q2.value = term; q2.classList.remove("hughing"); q2.blur();
     document.title = term + " - Hughgle Search";
- 
+
     const t = term, T = term.charAt(0).toUpperCase() + term.slice(1);
     const sites = shuffle(siteList);
     let si = 0;
     const nextSite = () => sites[si++ % sites.length];
     const fav = s => `<span class="fav" style="background:${s.color}">${s.name[0]}</span>`;
- 
+
     // overview
     const sources = Array.from({length: num(2,4)}, () => { const s = nextSite(); return `
-      <div class="src"><b>${rand(titleT)(t,T)}</b><span>${fav(s)}${s.name}</span></div>`; }).join("");
+      <div class="src" data-site="${s.name}"><b>${rand(titleT)(t,T)}</b><span>${fav(s)}${s.name}</span></div>`; }).join("");
     const overview = rand(overviewT)(t, T) + `
       <div class="ov-more" id="ovMore"><p><b>${rand(["Fun facts:","Also worth knowing:","Hugh also says:","More info:"])}</b></p>
       <ul>${pickN(moreT, num(2,4)).map(f => `<li>${f(t)}</li>`).join("")}</ul>
       <p>In summary, <b>${t}</b> is ${rand(["very important","kind of mid","the future","a mystery even to Hugh","10/10","not something to search at school","overrated","underrated","Hugh-approved"])}.</p></div>`;
- 
+
     let html = `<div class="ov">
         <div class="ov-head"><span class="ov-icon">✦</span>${rand(["Hugh Overview","Hugh Overview","Hugh Mode says"])}</div>
         <div class="ov-loading" id="ovLoad">${Array.from({length: num(3,5)}, () => `<div style="width:${num(55,96)}%"></div>`).join("")}</div>
@@ -549,34 +550,34 @@
           <button class="show-more" id="showMore">Show more ⌄</button>
           <div class="ov-foot">${rand(disclaimers)} <span class="thumb">👍</span><span class="thumb">👎</span></div>
         </div></div>`;
- 
+
     // build the sections in a random order
     const titles = pickN(titleT, num(6, 9));
-    const resultBlock = tf => { const s = nextSite(); return `<div class="result">
+    const resultBlock = tf => { const s = nextSite(); return `<div class="result" data-site="${s.name}">
         <div class="src-line">${fav(s)}<div><div class="site">${s.name}</div>
         <div class="url">https://www.${s.domain} › ${rand(["","wiki › ","r › ","products › ","watch?v=","blog › "])}${t.replace(/ /g, "-")}</div></div></div>
         <h3>${tf(t,T)}</h3>
         <p>${chance(0.7) ? `<span class="date">${fakeDate()} — </span>` : ""}${rand(snipT)(t)}</p></div>`; };
- 
+
     const extras = [];
     extras.push(() => `<div class="paa"><h2>People also ask</h2>${pickN(paaT, num(3,5)).map(f => { const q = f(t); return `<div class="q"><div class="q-top">${q[0]}<span class="arr">⌄</span></div><div class="q-ans">${q[1]}</div></div>`; }).join("")}</div>`);
     if (chance(0.75)) extras.push(() => `<div class="imgs"><h2>Hughmages</h2><div class="img-row">${Array.from({length: num(5,8)}, () =>
       `<div><div class="img-tile" style="background:${rand(bgs)}">${rand(emojis)}</div><div class="img-cap">${rand([t+" (real photo)", t+" in the wild", "Hugh with "+t, t+" at night", "rare "+t, t+" (not AI)"])}</div></div>`).join("")}</div></div>`);
     if (chance(0.6)) extras.push(() => `<div class="vids"><h2>Hughdeos</h2>${Array.from({length: num(2,3)}, () => { const s = rand(["HughTube","HughTok"]); return `
-      <div class="vid"><div class="vid-thumb" style="background:${rand(bgs)}">${rand(emojis)}<span class="len">${num(0,59)}:${String(num(0,59)).padStart(2,"0")}</span></div>
+      <div class="vid" data-site="${s}"><div class="vid-thumb" style="background:${rand(bgs)}">${rand(emojis)}<span class="len">${num(0,59)}:${String(num(0,59)).padStart(2,"0")}</span></div>
       <div><b>${rand([`${T} PRANK GONE WRONG (cops called)`,`I spent 24 hours inside a ${t}`,`${T} but it gets faster every time`,`Hugh reacts to ${t}`,`${T} SPEEDRUN (world record)`,`Unboxing a ${num(100,999)} year old ${t}`,`${T} vs ${W()} - who wins?`])}</b>
       <span>${s} · ${num(1,999)}K views · ${num(1,11)} ${rand(["days","weeks","months","years"])} ago</span></div></div>`; }).join("")}</div>`);
     if (chance(0.5)) extras.push(() => `<div class="news"><h2>Top stories</h2><div class="news-row">${Array.from({length: num(3,4)}, () => { const s = nextSite(); return `
-      <div class="news-card"><span style="display:flex;gap:6px;align-items:center">${fav(s)}${s.name}</span>
+      <div class="news-card" data-site="${s.name}"><span style="display:flex;gap:6px;align-items:center">${fav(s)}${s.name}</span>
       <b>${rand([`${T} shortage hits ${rand(["Ohio","Canada","every Walmart","Hugh's house"])}`,`Man finds ${t} in his ${W()}`,`Is ${t} the new ${W()}? Experts say yes`,`${T} prices soar after Hugh tweet`,`Town votes to make ${t} its mascot`,`${T} rescued from ${W()} by firefighters`])}</b>${num(1,23)} hours ago</div>`; }).join("")}</div></div>`);
- 
+
     // keep at least 2 normal links at the top like real search
     const top = titles.slice(0, 2).map(tf => resultBlock(tf));
     html += top.join("") + shuffle(titles.slice(2).map(tf => () => resultBlock(tf)).concat(extras)).map(f => f()).join("");
- 
+
     document.getElementById("resBody").innerHTML = html;
     window.scrollTo(0, 0);
- 
+
     setTimeout(() => {
       document.getElementById("ovLoad").style.display = "none";
       document.getElementById("ovReal").style.display = "block";
@@ -588,10 +589,14 @@
     };
     document.querySelectorAll(".q-top").forEach(q => q.onclick = () => q.parentElement.classList.toggle("open"));
     document.querySelectorAll(".result h3, .src, .img-tile, .link-chip, .vid, .news-card").forEach(el =>
-      el.onclick = () => toast(rand(["This website has been eaten by Hugh.","404: Hugh took this page.","This link is on a lunch break.","Hugh says no.","Page moved to Hugh's basement."])));
+      el.onclick = () => {
+        const owner = el.closest("[data-site]");
+        if (owner && owner.dataset.site === "HughTube") { window.location.href = HUGHTUBE_URL; return; }
+        toast(rand(["This website has been eaten by Hugh.","404: Hugh took this page.","This link is on a lunch break.","Hugh says no.","Page moved to Hugh's basement."]));
+      });
     document.querySelectorAll(".thumb").forEach(el => el.onclick = () => toast("Hugh has noted your feedback and ignored it."));
   }
- 
+
   document.getElementById("searchBtn").onclick = () => search(document.getElementById("q").value || randomPhrase());
   document.getElementById("luckyBtn").onclick = () => toast("You are feeling extremely Hughy. Result: " + randomPhrase());
   document.getElementById("hughMode").onclick = () => toast("✦ Hugh Mode activated. Hugh will now answer everything.");
